@@ -5,7 +5,7 @@ A centralized full-stack application designed for students to manage academic as
 ## Tech Stack
 - **Frontend**: React 18, Bootstrap 5, Bootstrap Icons, Vite, `Temporal` API (`temporal-polyfill`)
 - **Backend**: Node.js, Express.js REST API
-- **Database**: MongoDB with Mongoose ODM (includes an automatic local JSON persistence fallback when a local `mongod` instance is offline, while enforcing the Mongoose schema validation)
+- **Database**: MongoDB with Mongoose ODM
 
 ---
 
@@ -17,9 +17,9 @@ Student-Task-Tracker/
 │   ├── models/
 │   │   └── Task.js            # Mongoose schema & validation rules
 │   ├── routes/
-│   │   └── taskRoutes.js      # Express REST API endpoints (CRUD + /stats + /seed)
+│   │   └── taskRoutes.js      # Express REST API endpoints (CRUD + /stats)
 │   ├── services/
-│   │   └── taskStore.js       # MongoDB / Mongoose persistence service + fallback
+│   │   └── taskStore.js       # MongoDB / Mongoose queries & CRUD operations
 │   ├── tests/
 │   │   └── api.test.js        # Automated Node.js test suite for CRUD & stats
 │   ├── .env.example           # Environment variable template
@@ -52,7 +52,7 @@ Student-Task-Tracker/
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/health` | Health check and active storage engine status |
+| `GET` | `/api/health` | Health check and database connection status |
 | `GET` | `/api/tasks` | List tasks (supports `?subject=`, `?priority=`, `?status=`, `?category=`, `?search=`) |
 | `GET` | `/api/tasks/stats` | Aggregated workload stats, completion rate, subject breakdown, and approaching/overdue deadlines |
 | `GET` | `/api/tasks/:id` | Retrieve a single academic task by ID |
@@ -60,7 +60,6 @@ Student-Task-Tracker/
 | `PUT` | `/api/tasks/:id` | Update an existing task's details, deadline, priority, category, or status |
 | `PATCH` | `/api/tasks/:id/status` | Quick status transition (`Pending`, `In Progress`, `Completed`) |
 | `DELETE` | `/api/tasks/:id` | Delete an academic task |
-| `POST` | `/api/tasks/seed` | Reset and populate sample academic tasks |
 
 ---
 
@@ -71,8 +70,11 @@ Student-Task-Tracker/
 npm run install:all
 ```
 
-### 2. Configure MongoDB (Optional)
-By default, the backend connects to `mongodb://127.0.0.1:27017/student_task_tracker`. You can customize `PORT` and `MONGODB_URI` by copying `backend/.env.example` to `backend/.env`. If local MongoDB is not running, the server automatically falls back to local JSON persistence (`backend/data/tasks.json`) while still validating every document against the Mongoose `Task` model.
+### 2. Configure MongoDB
+By default, the backend connects to `mongodb://127.0.0.1:27017/student_task_tracker`. You can configure your local MongoDB connection or a remote MongoDB Atlas URI by copying `backend/.env.example` to `backend/.env`:
+```bash
+cp backend/.env.example backend/.env
+```
 
 ### 3. Run the Backend & Frontend
 Start the Express REST API server (runs on `http://localhost:5001`):
@@ -83,9 +85,4 @@ npm run start:backend
 In a second terminal, start the React + Vite development server (runs on `http://localhost:5173` and proxies `/api` to port `5001`):
 ```bash
 npm run start:frontend
-```
-
-### 4. Run Automated API Tests
-```bash
-npm test
 ```

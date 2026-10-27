@@ -1,7 +1,22 @@
 /* Custom Styles & Modern Web Best Practices for Student Task Tracker */
 
+@property --value {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 :root {
   --accent-brand: #0d6efd;
+  --in-oklab: ;
+  --in-oklch: ;
+}
+
+@supports (background: linear-gradient(in oklab, white, black)) {
+  :root {
+    --in-oklab: in oklab;
+    --in-oklch: in oklch;
+  }
 }
 
 /* Brand consistent native controls and focus outlines */
@@ -34,6 +49,178 @@ button:focus-visible {
 }
 
 .urgent-item-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Semantic <progress class="progress-ring"> (per progress-ring guide) */
+progress.progress-ring::-webkit-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::-webkit-progress-value {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::-moz-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::slider-fill {
+  display: none;
+  background: none;
+}
+
+.progress-ring-wrapper {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+progress.progress-ring {
+  --size: 72px;
+  --thickness: 9px;
+  --track-color: #e2e8f0;
+  --fill-color: #3b82f6;
+  --value: attr(value type(<number>));
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  transition: --value 0s ease-in-out;
+  background: conic-gradient(
+    var(--fill-color) calc(var(--value) * 1%),
+    var(--track-color) 0
+  );
+  background-clip: border-area;
+  border: var(--thickness) solid transparent;
+  background-origin: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  progress.progress-ring {
+    transition-duration: 0.4s;
+  }
+}
+
+progress.progress-ring[value="100"] {
+  --fill-color: #10b981;
+}
+
+@supports not (background-clip: border-area) {
+  progress.progress-ring {
+    mask-image: radial-gradient(
+      transparent calc(50% - var(--thickness)),
+      black calc(50% - var(--thickness) + 0.5px)
+    );
+    border: 0;
+  }
+}
+
+.progress-ring-content {
+  position: absolute;
+}
+
+/* Multi-Segment Conic-Gradient Status Donut Infographic (per visual-effects guide) */
+.status-donut-chart {
+  --stop-1: 0%;
+  --stop-2: 0%;
+  width: 136px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(
+    #10b981 0% var(--stop-1),
+    #06b6d4 var(--stop-1) var(--stop-2),
+    #f59e0b var(--stop-2) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+}
+
+.status-donut-hole {
+  width: 92px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.chart-gradient-bar {
+  background: linear-gradient(to right var(--in-oklch), #3b82f6, #10b981);
+}
+
+/* 7-Day Deadline Horizon Bar Chart */
+.horizon-chart-container {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.45rem;
+  align-items: end;
+  min-height: 175px;
+}
+
+.horizon-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.horizon-bar-val {
+  font-size: 0.72rem;
+  margin-bottom: 0.25rem;
+}
+
+.horizon-bar-track {
+  width: 100%;
+  max-width: 26px;
+  height: 108px;
+  background-color: #f1f5f9;
+  border-radius: 999px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.horizon-bar-fill {
+  width: 100%;
+  border-radius: 999px;
+  transition: height 0.35s ease;
+}
+
+.horizon-bar-label {
+  font-size: 0.72rem;
+  margin-top: 0.35rem;
+  color: #334155;
+}
+
+.horizon-bar-sub {
+  font-size: 0.64rem;
+  color: #94a3b8;
+}
+
+.category-bar-item {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.category-bar-item:hover {
   background-color: #f8fafc;
 }
 
@@ -205,4 +392,3 @@ input:required:user-valid {
     font-size: 0.82rem;
   }
 }
-

@@ -10,8 +10,7 @@ import {
   createTask,
   updateTask,
   updateTaskStatus,
-  deleteTask,
-  seedSampleTasks
+  deleteTask
 } from './services/taskApi';
 
 const DEFAULT_FILTERS = {
@@ -138,19 +137,6 @@ export default function App() {
     }
   };
 
-  const handleSeedDemoData = async () => {
-    try {
-      setLoading(true);
-      await seedSampleTasks();
-      setFilters(DEFAULT_FILTERS);
-      await loadData(DEFAULT_FILTERS);
-      showToast('Restored sample academic workload');
-    } catch (err) {
-      setErrorBanner(err.message || 'Failed to seed sample tasks.');
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-vh-100 d-flex flex-column bg-body-tertiary">
       {/* Top Navbar */}
@@ -169,26 +155,6 @@ export default function App() {
           </a>
 
           <div className="d-flex align-items-center gap-2 ms-auto">
-            {stats?.storageEngine && (
-              <span
-                className="badge bg-secondary bg-opacity-25 text-light border border-secondary d-none d-lg-inline-flex align-items-center gap-1 py-2 px-3"
-                title="Active Database Storage Engine"
-              >
-                <i className="bi bi-database-check text-info" aria-hidden="true"></i>
-                {stats.storageEngine}
-              </span>
-            )}
-
-            <button
-              type="button"
-              className="btn btn-outline-light btn-sm px-3"
-              onClick={handleSeedDemoData}
-              title="Reset and reload sample academic tasks"
-            >
-              <i className="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>
-              Reset Sample Data
-            </button>
-
             <button
               type="button"
               className="btn btn-primary btn-sm px-3 fw-semibold"
@@ -243,6 +209,8 @@ export default function App() {
         <DashboardSummary
           stats={stats}
           onQuickFilterStatus={(st) => handleFilterChange('status', st)}
+          onQuickFilterPriority={(prio) => handleFilterChange('priority', prio)}
+          onQuickFilterCategory={(cat) => handleFilterChange('category', cat)}
           onSelectTaskEdit={handleOpenEdit}
         />
 

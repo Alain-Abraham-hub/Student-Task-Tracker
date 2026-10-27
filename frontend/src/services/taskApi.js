@@ -61,10 +61,3 @@ export async function deleteTask(id) {
   return handleResponse(res);
 }
 
-export async function seedSampleTasks() {
-  const res = await fetch(`${API_BASE}/seed`, {
-    method: 'POST'
-  });
-  return handleResponse(res);
-}
-

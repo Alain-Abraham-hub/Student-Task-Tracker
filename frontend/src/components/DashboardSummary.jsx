@@ -1,7 +1,36 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { formatCalendarDeadline, getDeadlineUrgency } from '../utils/dateUtils';
+import WorkloadCharts from './WorkloadCharts';
 
-export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectTaskEdit }) {
+export default function DashboardSummary({
+  stats,
+  onQuickFilterStatus,
+  onQuickFilterPriority,
+  onQuickFilterCategory,
+  onSelectTaskEdit
+}) {
+  const progressRef = useRef(null);
+
+  // Sync value attribute to --value CSS custom property when CSS attr(value type(<number>)) is unsupported
+  useEffect(() => {
+    const progressEl = progressRef.current;
+    if (!progressEl) return;
+
+    const syncValue = () => {
+      progressEl.style.setProperty('--value', progressEl.getAttribute('value') || '0');
+    };
+    syncValue();
+
+    if (typeof CSS !== 'undefined' && !CSS.supports('width: attr(value type(<number>))')) {
+      const observer = new MutationObserver(syncValue);
+      observer.observe(progressEl, {
+        attributes: true,
+        attributeFilter: ['value']
+      });
+      return () => observer.disconnect();
+    }
+  }, [stats?.completionRate]);
+
   if (!stats) return null;
 
   const urgentItems = [...(stats.overdueTasks || []), ...(stats.approachingTasks || [])];
@@ -88,6 +117,7 @@ export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectT
           </div>
         </div>
 
+        {/* Completion Rate Card with Semantic <progress class="progress-ring"> */}
         <div className="col-12 col-sm-6 col-xl-3">
           <div
             className="card h-100 border-0 shadow-sm kpi-card"
@@ -96,37 +126,39 @@ export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectT
             onClick={() => onQuickFilterStatus('Completed')}
             onKeyDown={(e) => e.key === 'Enter' && onQuickFilterStatus('Completed')}
           >
-            <div className="card-body p-4">
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <div>
-                  <p className="text-uppercase text-muted small fw-bold mb-1">Completion Rate</p>
-                  <h2 className="display-6 fw-bold mb-0 text-success">{stats.completionRate}%</h2>
-                </div>
-                <div className="kpi-icon bg-success bg-opacity-10 text-success rounded-4 p-3">
-                  <i className="bi bi-trophy-fill fs-2" aria-hidden="true"></i>
-                </div>
+            <div className="card-body d-flex align-items-center justify-content-between p-4">
+              <div>
+                <p className="text-uppercase text-muted small fw-bold mb-1">Completion Rate</p>
+                <h2 className="display-6 fw-bold mb-1 text-success">{stats.completionRate}%</h2>
+                <small className="text-muted d-block">
+                  {stats.completed} of {stats.total} tasks done
+                </small>
               </div>
-              <div
-                className="progress"
-                role="progressbar"
-                aria-label="Academic task completion percentage"
-                aria-valuenow={stats.completionRate}
-                aria-valuemin="0"
-                aria-valuemax="100"
-                style={{ height: '8px' }}
-              >
-                <div
-                  className="progress-bar bg-success"
-                  style={{ width: `${stats.completionRate}%` }}
+              <div className="progress-ring-wrapper">
+                <progress
+                  ref={progressRef}
+                  value={stats.completionRate}
+                  max="100"
+                  aria-label="Academic task completion percentage"
+                  className="progress-ring"
+                  style={{ '--value': stats.completionRate }}
                 />
+                <div className="progress-ring-content fw-bold small text-dark">
+                  {stats.completionRate}%
+                </div>
               </div>
-              <small className="text-muted mt-2 d-block">
-                {stats.completed} of {stats.total} tasks completed
-              </small>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Visual Infographics & Analytics Row */}
+      <WorkloadCharts
+        stats={stats}
+        onQuickFilterStatus={onQuickFilterStatus}
+        onQuickFilterPriority={onQuickFilterPriority}
+        onQuickFilterCategory={onQuickFilterCategory}
+      />
 
       {/* Approaching Deadlines Alert Panel & Subject Workload Distribution */}
       <div className="row g-4">
@@ -221,8 +253,8 @@ export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectT
           <div className="card border-0 shadow-sm h-100">
             <div className="card-header bg-white border-0 pt-4 px-4 pb-2 d-flex align-items-center justify-content-between">
               <div>
-                <h3 className="h6 fw-bold mb-0">Subject Workload Breakdown</h3>
-                <small className="text-muted">Progress and remaining hours per course</small>
+                <h3 className="h6 fw-bold mb-0">Course Workload & Multi-Stage Progress</h3>
+                <small className="text-muted">Completed, in-progress, and remaining effort per subject</small>
               </div>
               <i className="bi bi-bar-chart-steps text-primary fs-5" aria-hidden="true"></i>
             </div>
@@ -230,33 +262,51 @@ export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectT
               {stats.subjectBreakdown && stats.subjectBreakdown.length > 0 ? (
                 <div className="d-flex flex-column gap-3">
                   {stats.subjectBreakdown.map((subj) => {
-                    const pct = subj.total > 0 ? Math.round((subj.completed / subj.total) * 100) : 0;
+                    const donePct = subj.total > 0 ? Math.round((subj.completed / subj.total) * 100) : 0;
+                    const progPct = subj.total > 0 ? Math.round((subj.inProgress / subj.total) * 100) : 0;
+                    const pendPct = subj.total > 0 ? Math.max(0, 100 - donePct - progPct) : 0;
                     return (
-                      <div key={subj.subject} className="p-2 rounded-3 bg-light border">
-                        <div className="d-flex justify-content-between align-items-center mb-1">
-                          <span className="fw-semibold small text-dark">{subj.subject}</span>
+                      <div key={subj.subject} className="p-3 rounded-3 bg-light border">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <span className="fw-bold small text-dark">{subj.subject}</span>
                           <div className="d-flex align-items-center gap-2">
                             <span className="badge bg-white text-secondary border">
                               {subj.hoursRemaining}h left
                             </span>
-                            <span className="small fw-bold text-primary">
-                              {subj.completed}/{subj.total} done
+                            <span className="small fw-bold text-success">
+                              {donePct}% ({subj.completed}/{subj.total})
                             </span>
                           </div>
                         </div>
                         <div
-                          className="progress"
-                          role="progressbar"
-                          aria-label={`${subj.subject} completion`}
-                          aria-valuenow={pct}
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style={{ height: '6px' }}
+                          className="progress rounded-pill overflow-hidden"
+                          style={{ height: '8px' }}
                         >
                           <div
-                            className="progress-bar bg-primary"
-                            style={{ width: `${pct}%` }}
+                            className="progress-bar bg-success"
+                            role="progressbar"
+                            style={{ width: `${donePct}%` }}
+                            aria-label={`${subj.subject} completed ${donePct}%`}
+                            title={`Completed: ${subj.completed}`}
                           />
+                          <div
+                            className="progress-bar bg-info"
+                            role="progressbar"
+                            style={{ width: `${progPct}%` }}
+                            aria-label={`${subj.subject} in progress ${progPct}%`}
+                            title={`In Progress: ${subj.inProgress}`}
+                          />
+                          <div
+                            className="progress-bar bg-warning"
+                            role="progressbar"
+                            style={{ width: `${pendPct}%` }}
+                            aria-label={`${subj.subject} pending ${pendPct}%`}
+                            title={`Pending: ${subj.pending}`}
+                          />
+                        </div>
+                        <div className="d-flex justify-content-between text-muted mt-1" style={{ fontSize: '0.72rem' }}>
+                          <span>{subj.completed} Done • {subj.inProgress} Active • {subj.pending} Pending</span>
+                          <span>Total Effort: {subj.totalHours ?? subj.hoursRemaining}h</span>
                         </div>
                       </div>
                     );
@@ -272,4 +322,3 @@ export default function DashboardSummary({ stats, onQuickFilterStatus, onSelectT
     </section>
   );
 }
-

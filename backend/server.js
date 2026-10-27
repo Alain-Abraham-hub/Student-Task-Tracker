@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const taskRoutes = require('./routes/taskRoutes');
-const taskStore = require('./services/taskStore');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -17,7 +16,7 @@ app.use(express.json());
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
-    storageEngine: taskStore.getStorageEngineName(),
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
     timestamp: new Date().toISOString()
   });
 });
@@ -35,14 +34,10 @@ app.use((err, req, res, next) => {
 
 const connectDBAndStart = async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 2500
-    });
+    await mongoose.connect(MONGODB_URI);
     console.log(`Connected to MongoDB at ${MONGODB_URI}`);
   } catch (err) {
-    console.warn(
-      `MongoDB connection unavailable (${err.message}). Using Mongoose schema validation with local JSON persistence fallback.`
-    );
+    console.error(`MongoDB connection error: ${err.message}`);
   }
 
   if (require.main === module) {
@@ -55,4 +50,3 @@ const connectDBAndStart = async () => {
 connectDBAndStart();
 
 module.exports = app;
-
