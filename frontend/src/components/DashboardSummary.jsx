@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { formatCalendarDeadline, getDeadlineUrgency } from '../utils/dateUtils';
-import WorkloadCharts from './WorkloadCharts';
 
 export default function DashboardSummary({
   stats,
   onQuickFilterStatus,
-  onQuickFilterPriority,
-  onQuickFilterCategory,
-  onSelectTaskEdit
+  onSelectTaskEdit,
+  onNavigateSection
 }) {
   const progressRef = useRef(null);
 
@@ -152,13 +150,40 @@ export default function DashboardSummary({
         </div>
       </div>
 
-      {/* Visual Infographics & Analytics Row */}
-      <WorkloadCharts
-        stats={stats}
-        onQuickFilterStatus={onQuickFilterStatus}
-        onQuickFilterPriority={onQuickFilterPriority}
-        onQuickFilterCategory={onQuickFilterCategory}
-      />
+      {/* Quick Action Shortcuts Banner */}
+      {onNavigateSection && (
+        <div className="card border-0 shadow-sm mb-4 bg-primary bg-opacity-10 border-start border-4 border-primary">
+          <div className="card-body p-3 px-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div className="d-flex align-items-center gap-3">
+              <i className="bi bi-stars text-primary fs-3" aria-hidden="true"></i>
+              <div>
+                <div className="fw-bold text-dark">Need a structured study timetable for your upcoming deadlines?</div>
+                <small className="text-muted">
+                  Use the Smart Study Planner to break your {stats.totalEstimatedHoursRemaining}h of active coursework into daily focus sessions.
+                </small>
+              </div>
+            </div>
+            <div className="d-flex gap-2">
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm px-3 fw-semibold"
+                onClick={() => onNavigateSection('analytics')}
+              >
+                <i className="bi bi-bar-chart-line me-1" aria-hidden="true"></i>
+                View Graphs & Infographics
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm px-3 fw-semibold"
+                onClick={() => onNavigateSection('planner')}
+              >
+                <i className="bi bi-calendar2-week me-1" aria-hidden="true"></i>
+                Generate Study Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Approaching Deadlines Alert Panel & Subject Workload Distribution */}
       <div className="row g-4">
@@ -189,7 +214,7 @@ export default function DashboardSummary({
                 </div>
               ) : (
                 <div className="list-group list-group-flush">
-                  {urgentItems.slice(0, 5).map((task) => {
+                  {urgentItems.slice(0, 6).map((task) => {
                     const urgency = getDeadlineUrgency(task.deadline, task.status);
                     return (
                       <div

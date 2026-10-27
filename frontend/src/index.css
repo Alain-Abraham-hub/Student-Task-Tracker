@@ -21,7 +21,8 @@
 
 /* Brand consistent native controls and focus outlines */
 input[type="radio"],
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="range"] {
   accent-color: var(--accent-brand);
 }
 
@@ -31,6 +32,66 @@ textarea:focus-visible,
 button:focus-visible {
   outline: 3px solid #0b57d0;
   outline-offset: 2px;
+}
+
+/* Application Sidebar & 2-Column Workspace Layout (per css-layout guide) */
+.app-shell {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  min-block-size: 100dvh;
+}
+
+.app-sidebar {
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  z-index: 1035;
+}
+
+.sidebar-nav-btn {
+  transition: background-color 0.15s ease, transform 0.12s ease;
+}
+
+.sidebar-nav-btn:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.planner-load-grid {
+  display: grid;
+  gap: 0.45rem;
+  align-items: end;
+  min-block-size: 165px;
+  overflow-x: auto;
+}
+
+@media (max-width: 991.98px) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: min(280px, 82dvw);
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .app-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 1030;
+  }
 }
 
 /* Dashboard KPI Cards */
