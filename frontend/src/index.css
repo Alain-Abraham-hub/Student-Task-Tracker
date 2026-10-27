@@ -1,0 +1,208 @@
+/* Custom Styles & Modern Web Best Practices for Student Task Tracker */
+
+:root {
+  --accent-brand: #0d6efd;
+}
+
+/* Brand consistent native controls and focus outlines */
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--accent-brand);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 3px solid #0b57d0;
+  outline-offset: 2px;
+}
+
+/* Dashboard KPI Cards */
+.kpi-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1.25rem rgba(15, 23, 42, 0.08) !important;
+}
+
+.urgent-item-row {
+  background-color: #fff;
+  transition: background-color 0.15s ease;
+}
+
+.urgent-item-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Native <dialog> Top-Layer & Scroll Containment Rules (per dialog guide) */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background-color: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.custom-modal-dialog {
+  width: min(640px, 94vw);
+  margin: auto;
+}
+
+.custom-confirm-dialog {
+  width: min(440px, 92vw);
+  margin: auto;
+}
+
+/* Required Field Feedback with :user-invalid (per required-field-feedback guide) */
+.error-msg {
+  display: none;
+  color: #d93025;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+input:user-invalid,
+select:user-invalid,
+textarea:user-invalid,
+input[aria-invalid="true"] {
+  border-color: #d93025 !important;
+  background-color: #fce8e6 !important;
+}
+
+input:user-invalid ~ .error-msg,
+select:user-invalid ~ .error-msg,
+input[aria-invalid="true"] ~ .error-msg {
+  display: block;
+}
+
+input:required:user-valid {
+  border-color: #188038;
+}
+
+/* Responsive Data Table with Container Queries & Sticky Headers (per responsive-table guide) */
+.table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  max-block-size: min(640px, 80vh);
+  container-type: inline-size;
+  border-radius: 0.5rem;
+}
+
+.task-responsive-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  --label-2: "Course / Category";
+  --label-3: "Deadline";
+  --label-4: "Priority";
+  --label-5: "Status";
+  --label-6: "Actions";
+}
+
+.task-responsive-table thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+}
+
+.task-responsive-table tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.task-responsive-table tr.table-light th {
+  background: #f8f9fa;
+}
+
+.task-desc-cell {
+  max-width: 360px;
+}
+
+.status-select {
+  min-width: 135px;
+}
+
+/* Container query stacked cards when table container is narrower than 680px */
+@container (width < 680px) {
+  .task-responsive-table,
+  .task-responsive-table thead,
+  .task-responsive-table tbody,
+  .task-responsive-table tr,
+  .task-responsive-table th,
+  .task-responsive-table td {
+    display: block;
+  }
+
+  .task-responsive-table thead {
+    display: none;
+  }
+
+  .task-responsive-table tbody tr {
+    margin-block-end: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .task-responsive-table tbody th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.85rem 1rem;
+  }
+
+  .task-responsive-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 1rem;
+    text-align: end !important;
+  }
+
+  .task-responsive-table td:nth-child(2)::before {
+    content: var(--label-2) ": ";
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+
+  .task-responsive-table td:nth-child(3)::before {
+    content: var(--label-3) ": ";
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+
+  .task-responsive-table td:nth-child(4)::before {
+    content: var(--label-4) ": ";
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+
+  .task-responsive-table td:nth-child(5)::before {
+    content: var(--label-5) ": ";
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+
+  .task-responsive-table td:nth-child(6)::before {
+    content: var(--label-6) ": ";
+    font-weight: 600;
+    color: #64748b;
+    font-size: 0.82rem;
+  }
+}
+

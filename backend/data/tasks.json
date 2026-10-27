@@ -1,0 +1,80 @@
+[
+  {
+    "_id": "seed-task-1",
+    "title": "Implement B-Tree Indexing Engine",
+    "subject": "Database Systems",
+    "category": "Project",
+    "priority": "High",
+    "status": "In Progress",
+    "deadline": "2026-10-28",
+    "description": "Complete node splitting, range scan iterator, and buffer pool pinning for the storage engine module.",
+    "estimatedHours": 8,
+    "createdAt": "2026-10-23T08:13:44.277Z",
+    "updatedAt": "2026-10-27T03:13:44.277Z"
+  },
+  {
+    "_id": "seed-task-2",
+    "title": "Midterm Exam: Dynamic Programming & Graphs",
+    "subject": "Algorithms",
+    "category": "Exam",
+    "priority": "High",
+    "status": "Pending",
+    "deadline": "2026-10-29",
+    "description": "Review Bellman-Ford, Floyd-Warshall, network flow, and NP-completeness reductions (Chapters 24-34).",
+    "estimatedHours": 6,
+    "createdAt": "2026-10-21T08:13:44.277Z",
+    "updatedAt": "2026-10-25T08:13:44.277Z"
+  },
+  {
+    "_id": "seed-task-3",
+    "title": "TCP Congestion Control Lab Report",
+    "subject": "Computer Networks",
+    "category": "Lab",
+    "priority": "Medium",
+    "status": "Pending",
+    "deadline": "2026-10-31",
+    "description": "Analyze Wireshark packet traces comparing TCP Reno and CUBIC throughput under simulated 2% packet loss.",
+    "estimatedHours": 3.5,
+    "createdAt": "2026-10-24T08:13:44.277Z",
+    "updatedAt": "2026-10-26T08:13:44.277Z"
+  },
+  {
+    "_id": "seed-task-4",
+    "title": "Problem Set 5: Eigenvalues & SVD",
+    "subject": "Linear Algebra",
+    "category": "Assignment",
+    "priority": "Medium",
+    "status": "Pending",
+    "deadline": "2026-10-26",
+    "description": "Complete exercises 5.1 through 5.8 and submit MATLAB/Python verification notebook on the LMS portal.",
+    "estimatedHours": 4,
+    "createdAt": "2026-10-20T08:13:44.277Z",
+    "updatedAt": "2026-10-26T08:13:44.277Z"
+  },
+  {
+    "_id": "seed-task-5",
+    "title": "Read Transformer Architecture Paper",
+    "subject": "Machine Learning",
+    "category": "Reading",
+    "priority": "Low",
+    "status": "Completed",
+    "deadline": "2026-10-24",
+    "description": "Summarize multi-head self-attention equations and positional encoding trade-offs for seminar discussion.",
+    "estimatedHours": 2,
+    "createdAt": "2026-10-18T08:13:44.277Z",
+    "updatedAt": "2026-10-24T08:13:44.277Z"
+  },
+  {
+    "_id": "seed-task-6",
+    "title": "REST API & MongoDB Integration Demo",
+    "subject": "Web Engineering",
+    "category": "Presentation",
+    "priority": "High",
+    "status": "In Progress",
+    "deadline": "2026-10-27",
+    "description": "Prepare slide deck and live demonstration of CRUD operations, workload statistics, and responsive UI.",
+    "estimatedHours": 3,
+    "createdAt": "2026-10-22T08:13:44.277Z",
+    "updatedAt": "2026-10-27T08:13:44.277Z"
+  }
+]

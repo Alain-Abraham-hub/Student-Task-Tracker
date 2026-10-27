@@ -1,0 +1,14 @@
+{
+  "name": "student-task-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Full-stack Student Academic Task Tracker (React + Bootstrap, Node.js + Express REST API, MongoDB)",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "start:backend": "npm --prefix backend start",
+    "start:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test"
+  }
+}
+
